@@ -24,3 +24,13 @@ if ('serviceWorker' in navigator) {
 
     });
 }
+
+function fetchEmail() {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+    
+}
+
+function showCompose() {
+    console.log ("Mail Composer Shown");
+}

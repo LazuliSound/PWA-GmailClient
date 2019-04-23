@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('assets/font/roboto/');
 .header {
     position:relative;
     background-color:#6646ef;
@@ -87,6 +87,7 @@
 
 .add-button {
     position: fixed;
+    z-index: 5;
     bottom: 16px;
     right: 16px;
 }
@@ -101,3 +102,4 @@
     font-size:24px;
     color:white;    
 }
+
