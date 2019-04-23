@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+.header {
+    position:relative;
+    background-color:#6646ef;
+    height:24px;
+    padding: 16px;
+}
+
+.header * {
+    margin:0;
+    color: #FFF;
+}
+
+.header h1 {
+    font-family:'Roboto';
+    position: absolute;
+    bottom:20px;
+    font-size:20px;
+}
+
+.controller {
+    display:flex;
+    flex-direction: column;
+    padding: 0 16px;
+    border-color: rgba(0,0,0,0);
+    border-bottom-style: solid;
+    border-bottom-color:grey;
+}
+
+.controller .input-container {
+    font-family:'Roboto';
+    font-size:14px;
+    display:flex;
+    margin:16px 0;    
+    
+}
+
+.controller .input-container * {
+    font-family:'Roboto';
+    font-size:14px;
+}
+.controller .input-container input {
+    width:100%;
+    border-color: rgba(0,0,0,0);
+    border-bottom-style: solid;
+    border-bottom-color:black;
+}
+.controller .input-container h1 {
+    font-family:'Roboto';
+    margin-right:16px;
+    width:50%;
+}
+.controller .input-container button {
+    background-color:#60dbc7;
+    border : 0;
+    font-size: 14px;
+    color: white;
+    min-width:64px;
+    height:36px;
+    padding: 0 16px;
+    border-radius: 4px;
+}
+
+.list-container {
+    overflow:scroll;
+}
+
+.list {
+    position: relative;
+    height:48px;
+    padding: 0 16px;
+    border-color: rgba(0,0,0,0);
+    border-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color:black;
+}
+
+.list * {
+    font-family: 'Roboto';
+    font-size: 16px;
+}
+
+.list .text {
+    position: absolute;
+    bottom: 0;
+}
+
+.add-button {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+}
+
+.add-button button {
+    height:56px;
+    width:56px;
+    padding: 0 16px;
+    background-color : #60dbc7;
+    border-radius: 28px;
+    font-family: 'Roboto';
+    font-size:24px;
+    color:white;    
+}

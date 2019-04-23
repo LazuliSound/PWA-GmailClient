@@ -1,0 +1,14 @@
+{
+  "name": "pwa-mail",
+  "version": "1.0.0",
+  "description": "Bare-naked \"progressive web app\" example with cache management.   Minimum requirements for [https://developers.google.com/web/progressive-web-apps/checklist](https://developers.google.com/web/progressive-web-apps/checklist).   Tested via Chrome Developer Tools > Audits. (see it on [https://dev-pwa.emanuelefornasier.it/](https://dev-pwa.emanuelefornasier.it/) )",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "emailjs-imap-client": "^3.0.7"
+  }
+}
