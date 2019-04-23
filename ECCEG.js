@@ -4,7 +4,13 @@ function negMod(a,b){
   if(b <= 0){
     throw new Exception("negative or zero moduli");
   }
-  var negA = a;
+  if(a >= 0){
+    return a % b;
+  }
+  else{
+    var negA = a*(-1);
+    return ((negA % b)-b)*(-1)
+  }
   while(negA < 0){
     negA += b*1000000;
   }
