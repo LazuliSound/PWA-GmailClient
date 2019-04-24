@@ -104,6 +104,8 @@ app.post('/sendmail', (req,res) => {
     const to = req.body.to;
     const subject = req.body.subject;
     const body = req.body.body;
+    const successcode = 1;
+    const errcode = 0;
 
     let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -122,9 +124,9 @@ app.post('/sendmail', (req,res) => {
         text: body, // plain text body
       }, (err,info) => {
         if (err)  {
-          return res.send(err);
+          return res.send({statuscode : errcode});
         } else {
-          return res.send(info);
+          return res.send({statuscode : successcode});
         }
       }
     );
