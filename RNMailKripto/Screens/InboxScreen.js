@@ -5,6 +5,9 @@ import coreStyle from '../styles';
 const styles= coreStyle;
 
 class InboxScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Mail Kripto - Inbox',
+  };
   constructor(props) {
     super(props);
     this.state = {
