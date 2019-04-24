@@ -88,7 +88,7 @@ class InboxScreen extends React.Component {
       <Provider>
         <ScrollView style={styles.container}>
           <View style={styles.controller}>
-            <Button mode="contained" onPress={() => {
+            <Button icon="inbox" mode="contained" onPress={() => {
               if (email === '' || password === '') {
                 this._showAlertMailCompose();
               } else {
@@ -98,7 +98,7 @@ class InboxScreen extends React.Component {
             >
               {this.state.textButton}
             </Button>
-            <Button mode="contained" onPress={() => {
+            <Button icon="create" mode="contained" onPress={() => {
               if (email === '' || password === '') {
                 this._showAlertMailCompose();
               } else {
