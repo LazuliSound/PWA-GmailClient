@@ -10,6 +10,7 @@ class InboxScreen extends React.Component {
     this.state = {
       textButton: "Ambil Surat Terbaru",
       mails : [],
+      mailLists : [],
       mailComposeVisibility: false,
       alertMailComposeVisibility: false,
       to: '',
@@ -23,37 +24,10 @@ class InboxScreen extends React.Component {
   _hideAlertMailCompose = () => this.setState({ alertMailComposeVisibility: false });
 
   appendList(id,from,subject) {
-    let tempMails = this.state.mails;
-    const datas = [
-      {
-        from: 'a',
-        description: 'desc:a',
-        key: 'a'
-      },
-      {
-        from: 'b',
-        description: 'desc:b',
-        key: 'b'
-      },
-      {
-        from: 'c',
-        description: 'desc:c',
-        key: 'c'
-      },
-      {
-        from: 'd',
-        description: 'desc:d',
-        key: 'd'
-      },
-      {
-        from: 'e',
-        description: 'desc:e',
-        key: 'e'
-      },
-    ]
+    let tempMails = this.state.mailLists;   
     tempMails.push(
       <TouchableRipple
-        onPress={() => console.log('Pressed')}
+        onPress={() => console.log({id})}
         rippleColor="rgba(0, 0, 0, .32)"
       >
         <List.Item
@@ -65,24 +39,47 @@ class InboxScreen extends React.Component {
       </TouchableRipple>
     )
     this.setState({
-        mails: tempMails
+        mailLists: tempMails
     })
   }
 
   clearMails() {
-    this.setState({mails : []});
+    this.setState({mails : [], mailLists : []});
   }
 
-  fetchMails() {
-    if (this.state.mails.length !== 0) {
-      this.clearMails();
-      this.setState({textButton : "Ambil Surat Terbaru"})
-    } else {
-      for (i = 1;i<6;i++) {
-        this.appendList(i,i,'b');
-      }   
-      this.setState({textButton : "Kosongkan Kotak Surat"})
-    }               
+  fetchMails(email, password) {
+    fetch('https://nodejs-mail-rest.herokuapp.com/mails', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    }).then((response) => response.json())
+    .then((responseJson) => {
+      let buffer = responseJson
+      let buffers = []
+      for (i=0;i<buffer.length;i++){
+        buffers.push(buffer[i])
+      }
+      if (this.state.mailLists.length !== 0) {
+        this.clearMails();
+        this.setState({textButton : "Ambil Surat Terbaru"})
+      } else {
+        console.log("portal2")
+        for (i = 0;i<buffers.length;i++) {
+          this.appendList(buffers[i].seqnum,buffers[i].from,buffers[i].subject);
+        }   
+        this.setState({textButton : "Kosongkan Kotak Surat"})
+      }               
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+    
   }
 
   render() {
@@ -100,7 +97,7 @@ class InboxScreen extends React.Component {
               if (email === '' || password === '') {
                 this._showAlertMailCompose();
               } else {
-                this.fetchMails()
+                this.fetchMails(email,password)
               }              
             }}
             >
@@ -117,8 +114,11 @@ class InboxScreen extends React.Component {
               Buat Surat Baru
             </Button>          
           </View>
-          <View>
+          <Text>
             {this.state.mails}
+          </Text>
+          <View>
+            {this.state.mailLists}
           </View>        
         </ScrollView>
         <Portal>
