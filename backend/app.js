@@ -2,8 +2,9 @@ require('dotenv').config()
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const Imap = require('imap'),
-    inspect = require('util').inspect;
+const Imap = require('imap');
+const inspect = require('util').inspect;
+const nodemailer = require('nodemailer')
 
 
 const app = express();
@@ -19,31 +20,7 @@ app.get('/',(req,res) => {
 });
 
 app.post('/', (req, res) => {
-  return res.send('Received a POST HTTP method\n');
-});
-
-app.post('/test', (req, res) => {
-    const one = 1;
-    const message = {
-        one, 
-        text: "hohoho",
-        userId: 123,
-        };
-    return res.send(message);
-});
-
-app.post('/tests', (req, res) => {
-    const one = 1;
-    const messages = []
-    const message = {
-        one, 
-        text: "hohoho",
-        userId: 123,
-      };
-      messages.push(message);
-      messages.push(message);
-      messages.push(message);
-    return res.send(messages);
+  return res.send('App is running\n');
 });
 
 app.post('/mails', (req, res) => {
@@ -121,7 +98,39 @@ app.post('/mails', (req, res) => {
     }    
 });
 
+app.post('/sendmail', (req,res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    const to = req.body.to;
+    const subject = req.body.subject;
+    const body = req.body.body;
+
+    let transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: email, // generated ethereal user
+          pass: password // generated ethereal password
+        }
+    });
+
+    transporter.sendMail({
+        from: email, // sender address
+        to: to, // list of receivers
+        subject: subject, // Subject line
+        text: body, // plain text body
+      }, (err,info) => {
+        if (err)  {
+          return res.send(err);
+        } else {
+          return res.send(info);
+        }
+      }
+    );
+});
+
 app.listen(process.env.PORT, () => {
     console.log(`App listen on port ${process.env.PORT}`)
-})
+});
 
