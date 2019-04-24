@@ -13,9 +13,6 @@ class InboxScreen extends React.Component {
       mailLists : [],
       mailComposeVisibility: false,
       alertMailComposeVisibility: false,
-      to: '',
-      subject: '',
-      isi: '',
     };    
   }
   _showMailCompose = () => this.setState({ mailComposeVisibility: true });
@@ -27,7 +24,11 @@ class InboxScreen extends React.Component {
     let tempMails = this.state.mailLists;   
     tempMails.push(
       <TouchableRipple
-        onPress={() => console.log({id})}
+        onPress={() => this.props.navigation.navigate('ReadMail', {
+          email : this.props.navigation.getParam('email', ''),          
+          password : this.props.navigation.getParam('password', ''),
+          seqnum: id
+        })}
         rippleColor="rgba(0, 0, 0, .32)"
       >
         <List.Item
@@ -90,9 +91,6 @@ class InboxScreen extends React.Component {
       <Provider>
         <ScrollView style={styles.container}>
           <View style={styles.controller}>
-            <Text>
-              {email} - {password}
-            </Text>
             <Button mode="contained" onPress={() => {
               if (email === '' || password === '') {
                 this._showAlertMailCompose();

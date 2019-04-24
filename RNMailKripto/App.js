@@ -6,6 +6,7 @@ import { Appbar, TextInput, Button, List, TouchableRipple, Portal, Dialog, Provi
 import coreStyle from './styles'
 import ConfigScreen from './Screens/ConfigScreen'
 import InboxScreen from './Screens/InboxScreen'
+import ReadMailScreen from './Screens/ReadMailScreen'
 
 
 class ProfileScreen extends React.Component {
@@ -37,7 +38,8 @@ class DetailsScreen extends React.Component {
 const AppNavigator = createStackNavigator(
   {
     Home: ConfigScreen,
-    Inbox: InboxScreen
+    Inbox: InboxScreen,
+    ReadMail: ReadMailScreen
   },
   {
     initialRouteName: "Home"
