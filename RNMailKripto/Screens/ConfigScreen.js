@@ -36,7 +36,7 @@ class ConfigScreen extends React.Component {
             secureTextEntry={true}
             onChangeText={(password) => this.setState({password})}
           />
-          <Button mode="contained" onPress={() => {
+          <Button icon="inbox" mode="contained" onPress={() => {
             if (this.state.email.length == 0 || this.state.password.length == 0) {
               this._showAlertMailCompose();
             } else {
