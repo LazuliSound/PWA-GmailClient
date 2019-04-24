@@ -11,37 +11,58 @@ class ReadMailScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      password: '',      
-      alertMailVisibility: false
+      from : '',
+      subject : '',
+      date : '',
+      text : '',
     }
   } 
 
-  _showAlertMailCompose = () => this.setState({ alertMailComposeVisibility: true });
-  _hideAlertMailCompose = () => this.setState({ alertMailComposeVisibility: false });
+  fetchMail(email, password, seqnum) {
+    fetch('https://nodejs-mail-rest.herokuapp.com/mail', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        seqnum: seqnum,
+      }),
+    }).then((response) => response.json())
+    .then((responseJson) => {
+      let buffer = responseJson;
+      console.log(buffer);
+      this.setState({subject : buffer.subject, from : buffer.from, date : buffer.date, text : buffer.text});
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
 
   render() {
     const email = this.props.navigation.getParam('email', '');
     const password = this.props.navigation.getParam('password', '');
     const seqnum = this.props.navigation.getParam('seqnum', '');
+    this.fetchMail(email,password,seqnum);
+
     return (
       <Provider>
         <ScrollView style={styles.container}>
           <Text>
-            {email} - {password} - {seqnum}
+            From : {this.state.from}
           </Text>
-          <Button mode="contained" onPress={() => {
-            if (this.state.email.length == 0 || this.state.password.length == 0) {
-              this._showAlertMailCompose();
-            } else {
-              this.props.navigation.navigate('Inbox', {
-                email : this.state.email,
-                password : this.state.password
-              })
-            }
-          }}>
-            To Inbox
-          </Button>
+          <Text>
+            Date : {this.state.date}
+          </Text>
+          <Text>
+            Subject : {this.state.subject}
+          </Text>
+          <Text>
+            {this.state.text}
+          </Text>
+          
         </ScrollView>
         <Portal>
           <Dialog
