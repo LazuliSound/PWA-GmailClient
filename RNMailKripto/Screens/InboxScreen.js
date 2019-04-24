@@ -105,7 +105,12 @@ class InboxScreen extends React.Component {
               if (email === '' || password === '') {
                 this._showAlertMailCompose();
               } else {
-                //TODO : Navigate ke halaman compose email
+                console.log('called');
+                this.props.navigation.navigate('ComposeMail', {
+                  email : email,
+                  password : password
+                });
+                console.log('called2');
               }
             }}
             >
