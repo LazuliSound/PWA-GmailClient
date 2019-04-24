@@ -11,12 +11,9 @@ class InboxScreen extends React.Component {
       textButton: "Ambil Surat Terbaru",
       mails : [],
       mailLists : [],
-      mailComposeVisibility: false,
       alertMailComposeVisibility: false,
     };    
   }
-  _showMailCompose = () => this.setState({ mailComposeVisibility: true });
-  _hideMailCompose = () => this.setState({ mailComposeVisibility: false });
   _showAlertMailCompose = () => this.setState({ alertMailComposeVisibility: true });
   _hideAlertMailCompose = () => this.setState({ alertMailComposeVisibility: false });
 
@@ -105,7 +102,7 @@ class InboxScreen extends React.Component {
               if (email === '' || password === '') {
                 this._showAlertMailCompose();
               } else {
-                this._showMailCompose()                
+                //TODO : Navigate ke halaman compose email
               }
             }}
             >
@@ -119,39 +116,6 @@ class InboxScreen extends React.Component {
             {this.state.mailLists}
           </View>        
         </ScrollView>
-        <Portal>
-          <Dialog
-            contentContainerStyle={styles.composeMailModalContainer}
-            visible={this.state.mailComposeVisibility}
-            onDismiss={this._hideMailCompose}
-          >
-            <Dialog.Actions>
-              <Button onPress={this._hideMailCompose}>Batal</Button>
-              <Button onPress={this._hideMailCompose}>Kirim</Button>
-            </Dialog.Actions>
-            <Dialog.Content>
-              <ScrollView>
-                <TextInput
-                  type="email-address"
-                  style={styles.textInput}
-                  placeholder="Email Tujuan"
-                  onChangeText={(to) => this.setState({to})}
-                />
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Subjek"
-                  onChangeText={(subject) => this.setState({subject})}
-                />
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Isi pesan"
-                  multiline={true}
-                  onChangeText={(isi) => this.setState({isi})}
-                />
-              </ScrollView>
-            </Dialog.Content>
-          </Dialog>         
-        </Portal>
         <Portal>
           <Dialog
             contentContainerStyle={styles.composeMailModalContainer}
