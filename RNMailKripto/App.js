@@ -7,6 +7,7 @@ import coreStyle from './styles'
 import ConfigScreen from './Screens/ConfigScreen'
 import InboxScreen from './Screens/InboxScreen'
 import ReadMailScreen from './Screens/ReadMailScreen'
+import ComposeMailScreen from './Screens/ComposeMailScreen'
 
 
 class ProfileScreen extends React.Component {
@@ -39,7 +40,8 @@ const AppNavigator = createStackNavigator(
   {
     Home: ConfigScreen,
     Inbox: InboxScreen,
-    ReadMail: ReadMailScreen
+    ReadMail: ReadMailScreen,
+    ComposeMail: ComposeMailScreen
   },
   {
     initialRouteName: "Home"
