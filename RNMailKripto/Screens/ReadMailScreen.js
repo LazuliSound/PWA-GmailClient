@@ -6,7 +6,7 @@ const styles= coreStyle;
 
 class ReadMailScreen extends React.Component {
   static navigationOptions = {
-    title: 'Mail Kripto - Configuration',
+    title: 'Mail Kripto - Baca Email',
   };
   constructor(props) {
     super(props);
