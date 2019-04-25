@@ -149,7 +149,7 @@ class SHA1 {
     procString += String.fromCharCode((string.length) * 8);
     for(i=0;i<procString.length;i += 32){
       var words = [];
-      for(j=0;j<16;j++){
+      for(var j=0;j<16;j++){
         words[j] = (procString[i+ 2*j].charCodeAt() << 8) + (procString[i+ 2*j + 1].charCodeAt());
       }
       this.sha512(words);
