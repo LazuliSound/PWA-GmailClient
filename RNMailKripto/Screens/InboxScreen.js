@@ -14,11 +14,8 @@ class InboxScreen extends React.Component {
       textButton: "Ambil Surat Terbaru",
       mails : [],
       mailLists : [],
-      alertMailComposeVisibility: false,
     };    
   }
-  _showAlertMailCompose = () => this.setState({ alertMailComposeVisibility: true });
-  _hideAlertMailCompose = () => this.setState({ alertMailComposeVisibility: false });
 
   appendList(id,from,subject) {
     let tempMails = this.state.mailLists;   
@@ -100,22 +97,7 @@ class InboxScreen extends React.Component {
             }}
             >
               {this.state.textButton}
-            </Button>
-            <Button icon="create" mode="contained" onPress={() => {
-              if (email === '' || password === '') {
-                this._showAlertMailCompose();
-              } else {
-                console.log('called');
-                this.props.navigation.navigate('ComposeMail', {
-                  email : email,
-                  password : password
-                });
-                console.log('called2');
-              }
-            }}
-            >
-              Buat Surat Baru
-            </Button>          
+            </Button>      
           </View>
           <Text>
             {this.state.mails}
@@ -123,22 +105,7 @@ class InboxScreen extends React.Component {
           <View>
             {this.state.mailLists}
           </View>        
-        </ScrollView>
-        <Portal>
-          <Dialog
-            contentContainerStyle={styles.composeMailModalContainer}
-            visible={this.state.alertMailComposeVisibility}
-            onDismiss={this._hideAlertMailCompose}
-          >
-            <Dialog.Title>Alert</Dialog.Title>
-            <Dialog.Content>
-              <Text>Tolong isi email dan password terlebih dahulu</Text>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button onPress={this._hideAlertMailCompose}>Done</Button>
-            </Dialog.Actions>
-          </Dialog>         
-        </Portal>
+        </ScrollView>        
       </Provider>
     );
   }
