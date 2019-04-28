@@ -13,12 +13,12 @@ class ComposeMailScreen extends React.Component {
     this.state = {
       to : '',
       subject : '',
-      text : '',
+      body : '',
     }
   } 
 
-  sendMail(email, password) {
-    fetch('https://nodejs-mail-rest.herokuapp.com/mail', {
+  sendMail(email, password, to, subject, body) {
+    fetch('https://nodejs-mail-rest.herokuapp.com/sendmail', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -27,23 +27,30 @@ class ComposeMailScreen extends React.Component {
       body: JSON.stringify({
         email: email,
         password: password,
-        seqnum: seqnum,
+        to: this.state.to,
+        subject : this.state.subject,
+        body: this.state.body
       }),
     }).then((response) => response.json())
     .then((responseJson) => {
-      let buffer = responseJson;
-      console.log(buffer);
-      this.setState({subject : buffer.subject, from : buffer.from, date : buffer.date, text : buffer.text});
+      console.log(responseJson);
+      this.props.navigation.navigate('Home', {
+        email : email,
+        password : password
+      });
     })
     .catch((error) => {
       console.error(error);
+      this.props.navigation.navigate('Home', {
+        email : email,
+        password : password
+      });
     });
   }
 
   render() {
     const email = this.props.navigation.getParam('email', '');
     const password = this.props.navigation.getParam('password', '');
-    const seqnum = this.props.navigation.getParam('seqnum', '');
 
     return (
       <Provider>
@@ -52,7 +59,7 @@ class ComposeMailScreen extends React.Component {
             if (email === '' || password === '') {
               this._showAlertMailCompose();
             } else {
-              this.fetchMails(email,password)
+              this.sendMail(email,password)
             }              
           }}>
             Kirim Surel
@@ -73,8 +80,8 @@ class ComposeMailScreen extends React.Component {
             label='Isi Pesan'
             mode='flat'
             multiline={true}
-            value={this.state.text}
-            onChangeText={text => this.setState({ text })}
+            value={this.state.body}
+            onChangeText={body => this.setState({ body })}
           />            
         </ScrollView>
       </Provider>
