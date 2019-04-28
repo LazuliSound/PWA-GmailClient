@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { Alert, ScrollView } from 'react-native';
 import { TextInput, Button, Provider } from 'react-native-paper';
 import coreStyle from '../styles';
 const styles= coreStyle;
@@ -16,6 +16,30 @@ class ComposeMailScreen extends React.Component {
       body : '',
     }
   } 
+
+  showAlert(email,password,status) {
+    let isSuccess = status;
+    let header = '';
+    if (isSuccess) {
+      header = 'Pengiriman email sukses';
+    } else {
+      header = 'Pengiriman email gagal';
+    }
+
+    Alert.alert(
+      header,
+      '',
+      [
+        {text: 'Ok', onPress: () => {
+          this.props.navigation.navigate('Home', {
+            email : email,
+            password : password
+          });
+        }},
+      ],
+      {cancelable: false},
+    );
+  }
 
   sendMail(email, password, to, subject, body) {
     fetch('https://nodejs-mail-rest.herokuapp.com/sendmail', {
@@ -34,19 +58,13 @@ class ComposeMailScreen extends React.Component {
     }).then((response) => response.json())
     .then((responseJson) => {
       console.log(responseJson);
-      this.props.navigation.navigate('Home', {
-        email : email,
-        password : password
-      });
+      this.showAlert(email,password,true);
     })
     .catch((error) => {
       console.error(error);
-      this.props.navigation.navigate('Home', {
-        email : email,
-        password : password
-      });
+      this.showAlert(email,password,false);
     });
-  }
+  }  
 
   render() {
     const email = this.props.navigation.getParam('email', '');
