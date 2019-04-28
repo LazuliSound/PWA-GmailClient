@@ -48,6 +48,21 @@ class ConfigScreen extends React.Component {
           }}>
             To Inbox
           </Button>
+          <Button icon="create" mode="contained" onPress={() => {
+              if (this.state.email.length === 0 || this.state.password.length === 0) {
+                this._showAlertMailCompose();
+              } else {
+                console.log('called');
+                this.props.navigation.navigate('ComposeMail', {
+                  email : this.state.email,
+                  password : this.state.password
+                });
+                console.log('called2');
+              }
+            }}
+            >
+              Buat Surat Baru
+            </Button>  
         </ScrollView>
         <Portal>
           <Dialog
