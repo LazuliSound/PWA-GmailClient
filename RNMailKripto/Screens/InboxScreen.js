@@ -66,8 +66,7 @@ class InboxScreen extends React.Component {
       if (this.state.mailLists.length !== 0) {
         this.clearMails();
         this.setState({textButton : "Ambil Surat Terbaru"})
-      } else {
-        console.log("portal2")
+      } else {        
         for (i = 0;i<buffers.length;i++) {
           this.appendList(buffers[i].seqnum,buffers[i].from,buffers[i].subject);
         }   
