@@ -67,9 +67,9 @@ class Point {
 
 class ECCEG {
   constructor(a,b,p) {
-    this.a = 0;
-    this.b = 0;
-    this.p = 0;
+    this.a = 1;
+    this.b = 18;
+    this.p = 2087;
     if(a !== undefined){
       this.a = a;
     }
@@ -193,7 +193,7 @@ class ECCEG {
 
   generateKey(pointG){
     // var priv = Math.floor(Math.random()*5);
-    var priv = 1;
+    var priv = Math.floor(Math.random()*10)+1;
     var pointPub = this.mult(pointG, priv);
     return [priv, pointPub];
   }

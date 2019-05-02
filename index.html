@@ -13,8 +13,86 @@
 
     <pre id="content" style="white-space: pre-wrap;"></pre>
 
+    <script src="/ECCEG.js">
+    </script>
+
+    <script src="/SHA1-purejs.js">
+    </script>
+
+    <!-- SIGNING EXAMPLE-->
+    <script>
+      //example payload
+      var payload = "Ku bisa tenggelam di lautan Aku bisa diracun di udara Aku bisa terbunuh di trotoar jalan Tapi aku tak pernah mati Tak akan berhenti..."
+
+      //generate hash
+      var hashResult = new SHA1().shaString("payload");
+
+      //initialize ECCEG
+      var ecc1 = new ECCEG(1,18,2087);
+      var pointG = new Point(771, 35);
+      var priv = 10;
+      var pointPub = new Point(1751, 735);
+      var kEncode = 10;
+      var kEncrypt = 10;
+
+      //Encode hash
+      var arrPlain = ecc1.stringEncAscii(hashResult, kEncode);
+
+      //Encrypted hash
+      var arrCipher = ecc1.arrEncrypt(arrPlain, pointG, kEncrypt, pointPub);
+
+      //Encrypted Points To String
+      var encryptedString = ""
+      for(var i=0;i<arrCipher.length;i++){
+        encryptedString += arrCipher[i][0].x+","+arrCipher[i][0].y+":"+arrCipher[i][1].x+","+arrCipher[i][1].y+" ";
+      }
+      console.log(encryptedString);
+    </script>
+
+    <!--PROVE SIGNING EXAMPLE-->
+    <script>
+      //initialize ECCEG
+      var ecc1 = new ECCEG(1,18,2087);
+      var pointG = new Point(771, 35);
+      var priv = 10;
+      var pointPub = new Point(1751, 735);
+      var kEncode = 10;
+      var kEncrypt = 10;
+
+      //parse points from encryptedString
+      var decipheredPoints = [];
+      var procString = encryptedString;
+      while(procString.length>0){
+        var x1,y1,x2,y2;
+        x1 = procString.substr(0,procString.search(","));
+        procString = procString.substr(procString.search(",")+1);
+        y1 = procString.substr(0,procString.search(":"));
+        procString = procString.substr(procString.search(":")+1);
+        x2 = procString.substr(0,procString.search(","));
+        procString = procString.substr(procString.search(",")+1);
+        y2 = procString.substr(0,procString.search(" "));
+        procString = procString.substr(procString.search(" ")+1);
+
+        decipheredPoints.push([new Point(x1,y1),new Point(x2,y2)]);
+      }
+
+      //decrypt points
+      var arrDecrypt = ecc1.arrDecrypt(decipheredPoints, priv);
+
+      //decode point to string
+      var string2 = ecc1.stringDecAscii(arrDecrypt, kEncode);
+
+      //compare string to hash
+      if(string2 == hashResult){
+        console.log("Success");
+      }
+      else{
+        console.log("Fail");
+      }
+    </script>
+
     <script type="text/javascript">
-      
+
       /**
       *
       *  Base64 encode / decode
