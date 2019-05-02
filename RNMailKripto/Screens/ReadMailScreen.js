@@ -19,6 +19,7 @@ class ReadMailScreen extends React.Component {
   } 
 
   fetchMail(email, password, seqnum) {
+    console.log(`Try to fetch ${email} - ${password} - ${seqnum}`);
     fetch('https://nodejs-mail-rest.herokuapp.com/mail', {
       method: 'POST',
       headers: {
@@ -30,22 +31,33 @@ class ReadMailScreen extends React.Component {
         password: password,
         seqnum: seqnum,
       }),
-    }).then((response) => response.json())
-    .then((responseJson) => {
-      let buffer = responseJson;
+    }).then((response) => response.text())
+    .then((responseData) => {
+      console.log('success');
+      let buffer = responseData;
       console.log(buffer);
-      this.setState({subject : buffer.subject, from : buffer.from, date : buffer.date, text : buffer.text});
+      if (typeof buffer === 'string' && buffer.substr(0,1) === '<') {
+        this.setState({subject : bufferJson.subject, from : bufferJson.from, date : bufferJson.date, text : 'request timeout'});
+      } else {
+        let bufferJson = JSON.parse(buffer);      
+        console.log(typeof bufferJson);
+        this.setState({subject : bufferJson.subject, from : bufferJson.from, date : bufferJson.date, text : bufferJson.text});
+      }
     })
     .catch((error) => {
+      console.log('failed');
       console.error(error);
     });
   }
-
-  render() {
+  componentWillMount(){      
     const email = this.props.navigation.getParam('email', '');
     const password = this.props.navigation.getParam('password', '');
-    const seqnum = this.props.navigation.getParam('seqnum', '');
+    const seqnum = this.props.navigation.getParam('seqnum', '');    
     this.fetchMail(email,password,seqnum);
+  }
+
+  render() {
+    
 
     return (
       <Provider>
