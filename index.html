@@ -38,15 +38,21 @@
       //Encode hash
       var arrPlain = ecc1.stringEncAscii(hashResult, kEncode);
 
+      console.log("arrPlain");
+      console.log(arrPlain);
+
       //Encrypted hash
       var arrCipher = ecc1.arrEncrypt(arrPlain, pointG, kEncrypt, pointPub);
+      console.log("arrCipher");
+      console.log(arrCipher);
 
       //Encrypted Points To String
       var encryptedString = ""
       for(var i=0;i<arrCipher.length;i++){
         encryptedString += arrCipher[i][0].x+","+arrCipher[i][0].y+":"+arrCipher[i][1].x+","+arrCipher[i][1].y+" ";
       }
-      console.log(encryptedString);
+      console.log("hash : " + hashResult);
+      console.log("encrypted : " + encryptedString);
     </script>
 
     <!--PROVE SIGNING EXAMPLE-->
