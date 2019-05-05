@@ -5,7 +5,6 @@ import coreStyle from '../styles';
 import SHA1 from '../lib/SHA-1';
 import {ECCEG, Point} from '../lib/ECCEG';
 const styles= coreStyle;
-const pointG = new Point(771, 35);
 const kEncode = 10;
 const kEncrypt = 10;
 
@@ -19,12 +18,17 @@ class ComposeMailScreen extends React.Component {
       to : '',
       subject : '',
       body : '',
-      pubX : null,
-      pubY : null,
+      pubX : 0,
+      pubY : 0,
       isEncrypt: false,
       isSigned: false,
+      privateKeyX : 0,
+      privateKeyY : 0,
+      GX : 0,
+      GY : 0,
     }
   } 
+  
 
   showAlert(email,password,status) {
     let isSuccess = status;
@@ -51,30 +55,45 @@ class ComposeMailScreen extends React.Component {
   }
 
   sendMail(email, password) {
+    var pointG = null
+    var privateKey = null;
     const ecc1 = new ECCEG(1,18,2087);
     const isEncrypt = this.state.isEncrypt;
     const isSigned = this.state.isSigned;
-    let payload = this.state.body;
-    let hash = null;
-    let hashContainer = null;
-    let arrPayload = null;
-    let arrHash = null;
-    let digiSig = null;
-    let arrPayloadEncrypted = null;
+    var payload = this.state.body;
+    var hash = null;
+    var hashContainer = '';
+    var arrPayload = null;
+    var arrHash = null;
+    var digiSig = null;
+    var arrPayloadEncrypted = null;
 
     if (isEncrypt || isSigned) {
+      pointG = new Point(this.state.GX, this.state.GY);
       hash = new SHA1().shaString(payload);
-      if (isEncrypt) {
-        arrPayload = ecc1.stringEncAscii(hash, kEncode);
+      if (isEncrypt && this.state.pubX !== 0 && this.state.pubY !== 0) {
+        let publicKey = new Point(this.state.pubX, this.state.pubY);
+        arrPayload = ecc1.stringEncAscii(payload, kEncode);
+        encryptedPayload = ecc1.arrEncrypt(arrPayload, pointG, kEncrypt, publicKey);
+        let cipher = "";
+        for(var i=0;i<encryptedPayload.length;i++){
+          cipher += encryptedPayload[i][0].x+","+encryptedPayload[i][0].y+":"+encryptedPayload[i][1].x+","+encryptedPayload[i][1].y+" ";
+        }  
+
+        payload = '[encrypted]'+ cipher +'[/encrypted]<br>';
       }
       if (isSigned) {
+        privateKey = new Point(this.state.privateKeyX, this.state.privateKeyY);
         arrHash = ecc1.stringEncAscii(hash, kEncode);
-        digiSig = ecc1.arrEncrypt(arrhash, pointG, kEncrypt, pointPub);
-        hashContainer = "\n<a-sha>" +hash+ "</a-sha>\n";
-        payload += hashContainer;
+        encryptedHash = ecc1.arrEncrypt(arrHash, pointG, kEncrypt, privateKey);
+        let digiSig = "";
+        for(var i=0;i<encryptedHash.length;i++){
+          digiSig += encryptedHash[i][0].x+","+encryptedHash[i][0].y+":"+encryptedHash[i][1].x+","+encryptedHash[i][1].y+" ";
+        }  
+        hashContainer = "<br>[ashap]" + digiSig + "[/ashap]\n";
+        payload = payload + hashContainer;
       }
     }
-    
     
     
     
@@ -93,11 +112,7 @@ class ComposeMailScreen extends React.Component {
       }),
     }).then((response) => response.json())
     .then((responseJson) => {
-      console.log(responseJson);
-      console.log("Body");
-      console.log(this.state.body);
-      console.log("Hashed Body");
-      console.log(new SHA1().shaString(this.state.body));
+      console.log(payload);
       this.showAlert(email,password,true);
     })
     .catch((error) => {
@@ -105,6 +120,13 @@ class ComposeMailScreen extends React.Component {
       this.showAlert(email,password,false);
     });
   }  
+
+  componentWillMount(){      
+    this.setState({ GX : this.props.navigation.getParam('GX', 0) });
+    this.setState({ GY : this.props.navigation.getParam('GY', 0) });
+    this.setState({ privateKeyX : this.props.navigation.getParam('privateKeyX', 0) });
+    this.setState({ privateKeyY : this.props.navigation.getParam('privateKeyY', 0) });    
+  }
 
   render() {
     const email = this.props.navigation.getParam('email', '');
@@ -140,18 +162,21 @@ class ComposeMailScreen extends React.Component {
               />
             </View>  
           </View>
-          <TextInput
-            label='Kunci Publik X Penerima'
-            mode='flat'
-            value={this.state.pubX}
-            onChangeText={pubX => this.setState({ pubX })}
-          />
-          <TextInput
-            label='Kunci Publik Y Penerima'
-            mode='flat'
-            value={this.state.pubY}
-            onChangeText={pubY => this.setState({ pubY })}
-          />
+          <View>
+            <TextInput
+              label='Kunci Publik X Penerima'
+              mode='flat'
+              value={this.state.pubX}
+              onChangeText={pubX => this.setState({ pubX })}
+            />
+
+            <TextInput
+              label='Kunci Publik Y Penerima'
+              mode='flat'
+              value={this.state.pubY}
+              onChangeText={pubY => this.setState({ pubY })}
+            />
+          </View>
           <TextInput
             label='Penerima'
             mode='flat'
