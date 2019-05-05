@@ -1,8 +1,13 @@
 import React from 'react';
-import { Alert, ScrollView } from 'react-native';
-import { TextInput, Button, Provider } from 'react-native-paper';
+import { Alert, ScrollView, View, Text } from 'react-native';
+import { TextInput, Button, Provider, Checkbox } from 'react-native-paper';
 import coreStyle from '../styles';
+import SHA1 from '../lib/SHA-1';
+import {ECCEG, Point} from '../lib/ECCEG';
 const styles= coreStyle;
+const pointG = new Point(771, 35);
+const kEncode = 10;
+const kEncrypt = 10;
 
 class ComposeMailScreen extends React.Component {
   static navigationOptions = {
@@ -14,6 +19,10 @@ class ComposeMailScreen extends React.Component {
       to : '',
       subject : '',
       body : '',
+      pubX : null,
+      pubY : null,
+      isEncrypt: false,
+      isSigned: false,
     }
   } 
 
@@ -41,7 +50,34 @@ class ComposeMailScreen extends React.Component {
     );
   }
 
-  sendMail(email, password, to, subject, body) {
+  sendMail(email, password) {
+    const ecc1 = new ECCEG(1,18,2087);
+    const isEncrypt = this.state.isEncrypt;
+    const isSigned = this.state.isSigned;
+    let payload = this.state.body;
+    let hash = null;
+    let hashContainer = null;
+    let arrPayload = null;
+    let arrHash = null;
+    let digiSig = null;
+    let arrPayloadEncrypted = null;
+
+    if (isEncrypt || isSigned) {
+      hash = new SHA1().shaString(payload);
+      if (isEncrypt) {
+        arrPayload = ecc1.stringEncAscii(hash, kEncode);
+      }
+      if (isSigned) {
+        arrHash = ecc1.stringEncAscii(hash, kEncode);
+        digiSig = ecc1.arrEncrypt(arrhash, pointG, kEncrypt, pointPub);
+        hashContainer = "\n<a-sha>" +hash+ "</a-sha>\n";
+        payload += hashContainer;
+      }
+    }
+    
+    
+    
+    
     fetch('https://nodejs-mail-rest.herokuapp.com/sendmail', {
       method: 'POST',
       headers: {
@@ -53,11 +89,15 @@ class ComposeMailScreen extends React.Component {
         password: password,
         to: this.state.to,
         subject : this.state.subject,
-        body: this.state.body
+        body: payload,
       }),
     }).then((response) => response.json())
     .then((responseJson) => {
       console.log(responseJson);
+      console.log("Body");
+      console.log(this.state.body);
+      console.log("Hashed Body");
+      console.log(new SHA1().shaString(this.state.body));
       this.showAlert(email,password,true);
     })
     .catch((error) => {
@@ -69,6 +109,8 @@ class ComposeMailScreen extends React.Component {
   render() {
     const email = this.props.navigation.getParam('email', '');
     const password = this.props.navigation.getParam('password', '');
+    const isEncrypt = this.state.isEncrypt;
+    const isSigned = this.state.isSigned;
 
     return (
       <Provider>
@@ -82,6 +124,34 @@ class ComposeMailScreen extends React.Component {
           }}>
             Kirim Surel
           </Button>
+          <View>
+            <View>
+              <Text>Enkripsi Pesan</Text>
+              <Checkbox
+                status={isEncrypt ? 'checked' : 'unchecked'}
+                onPress={() => { this.setState({ isEncrypt: !isEncrypt }); }}
+              />
+            </View>
+            <View>
+              <Text>Tandatangani Pesan</Text>
+              <Checkbox
+                status={isSigned ? 'checked' : 'unchecked'}
+                onPress={() => { this.setState({ isSigned: !isSigned }); }}
+              />
+            </View>  
+          </View>
+          <TextInput
+            label='Kunci Publik X Penerima'
+            mode='flat'
+            value={this.state.pubX}
+            onChangeText={pubX => this.setState({ pubX })}
+          />
+          <TextInput
+            label='Kunci Publik Y Penerima'
+            mode='flat'
+            value={this.state.pubY}
+            onChangeText={pubY => this.setState({ pubY })}
+          />
           <TextInput
             label='Penerima'
             mode='flat'
