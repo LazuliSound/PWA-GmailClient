@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, ScrollView } from 'react-native';
 import { TextInput, Button, Portal, Dialog, Provider } from 'react-native-paper';
 import coreStyle from '../styles';
+import { Point, ECCEG } from '../lib/ECCEG';
 const styles= coreStyle;
 
 class ConfigScreen extends React.Component {
@@ -13,7 +14,10 @@ class ConfigScreen extends React.Component {
     this.state = {
       email: '',
       password: '',      
-      alertMailVisibility: false
+      alertMailVisibility: false,
+      publicKey : 0,
+      privateKeyX : '',
+      privateKeyY : '',
     }
   } 
 
@@ -62,7 +66,26 @@ class ConfigScreen extends React.Component {
             }}
             >
               Buat Surat Baru
-            </Button>  
+            </Button> 
+            <Button icon="create" mode="contained" onPress={() => {
+              let G = new ECCEG().generateG();
+              let key = new ECCEG().generateKey(G);
+              let publicKey = key[0];
+              let privateKey = key[1];
+              this.setState({publicKey : publicKey});
+              this.setState({privateKeyX : privateKey.x});
+              this.setState({privateKeyY : privateKey.y});
+            }}
+            >
+              Generate Key
+            </Button> 
+            <Text>
+              Public Key : { this.state.publicKey }
+            </Text> 
+            <Text>
+              Private Key X : { this.state.privateKeyX }
+              Private Key Y : { this.state.privateKeyY }
+            </Text> 
         </ScrollView>
         <Portal>
           <Dialog
