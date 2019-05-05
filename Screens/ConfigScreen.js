@@ -18,8 +18,8 @@ class ConfigScreen extends React.Component {
       publicKey : 0,
       GX: 0,
       GY: 0,
-      privateKeyX : '',
-      privateKeyY : '',
+      privateKeyX : 0,
+      privateKeyY : 0,
     }
   } 
 
@@ -91,11 +91,11 @@ class ConfigScreen extends React.Component {
               Public Key : { this.state.publicKey }
             </Text> 
             <Text>
-              GX : { this.state.GX }
+              GX : { this.state.GX } | 
               GY : { this.state.GY }
             </Text> 
             <Text>
-              Private Key X : { this.state.privateKeyX }
+              Private Key X : { this.state.privateKeyX } | 
               Private Key Y : { this.state.privateKeyY }
             </Text> 
         </ScrollView>
