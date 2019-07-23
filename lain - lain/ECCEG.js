@@ -193,19 +193,13 @@ class ECCEG {
 
   generateKey(pointG){
     // var priv = Math.floor(Math.random()*5);
-    var priv = Math.floor(Math.random()*10)+1;
+    var priv = 10;
     var pointPub = this.mult(pointG, priv);
     return [priv, pointPub];
   }
 
   generateG(){
-    var x = Math.floor(Math.random()*(this.p-1));
-    var y = this.findY(x);
-    while(y == -1){
-      x = Math.floor(Math.random()*(this.p-1));
-      y = this.findY(x);
-    }
-    return new Point(x, y);
+    return new Point(771, 35);
   }
 }
 
